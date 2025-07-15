@@ -10,21 +10,7 @@
   border: 0 solid;
 }
 
-@layer base {
-  h1 {
-    font-size: var(--text-2xl);
-  }
-  h2 {
-    font-size: var(--text-xl);
-  }
-  h3 {
-    font-size: var(--text-lg);
-  }
-  a {
-    color: var(--color-blue-600);
-    text-decoration-line: underline;
-  }
-}
+
 @layer components {
   .btn-primary {
     border-radius: calc(infinity * 1px);
