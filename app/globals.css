@@ -6,8 +6,7 @@
   }
 }
 
-@layer base {
-  :root {
+@theme {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%; /* Dark Blue/Gray */
 
@@ -84,7 +83,7 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
+
 
 @layer base {
   * {
