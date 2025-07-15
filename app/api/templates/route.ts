@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import { getAllTemplates } from "@/lib/templates"
 
-export const runtime = "edge" // Set the runtime to edge for optimal performance
+// Removed: export const runtime = "edge"
+// This file will now run on the default Node.js runtime, allowing 'fs' access.
 
 export async function GET(request: Request) {
   try {
