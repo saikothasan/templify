@@ -4,6 +4,7 @@ import { VENDOR_NAME } from "@/types"
 import TemplateDetailPageClient from "./TemplateDetailPageClient"
 import { getTemplateBySlugAction, getRelatedTemplatesAction } from "@/app/actions/template-actions"
 import { getAllTemplateSlugs } from "@/lib/templates"
+import type { Template } from "@/types" // Ensure Template type is imported
 
 // We will use 'any' for params in the function signatures as a workaround
 // for the persistent type error, which indicates an environment-specific issue.
@@ -26,7 +27,8 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
     }
   }
 
-  const template = templateResponse.data // Access the actual template data
+  // Explicitly assert the type of template to ensure TypeScript recognizes it
+  const template: Template = templateResponse.data
 
   const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://your-actual-domain.com"
   const fullImageUrl = template.imageUrl.startsWith("http") ? template.imageUrl : `${siteUrl}${template.imageUrl}`
@@ -74,7 +76,8 @@ export default async function TemplateDetailPage({ params }: { params: any }) {
     notFound() // If template not found or error, trigger Next.js notFound
   }
 
-  const template = templateResponse.data // Access the actual template data
+  // Explicitly assert the type of template here as well
+  const template: Template = templateResponse.data
 
   const relatedTemplatesResponse = await getRelatedTemplatesAction(template.id, template.category)
   // Pass relatedTemplatesData only if successful, otherwise an empty array or handle error in client component
