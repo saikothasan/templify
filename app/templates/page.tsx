@@ -52,31 +52,21 @@ export default function TemplatesPage() {
       setIsLoadingTemplates(true)
       setError(null) // Clear previous errors
       try {
-        const templatesData = await getAllTemplatesAction()
-        setAllTemplates(templatesData)
+        const response = await getAllTemplatesAction() // Call the action
+        if (response.success) {
+          setAllTemplates(response.data || []) // Ensure data is an array
+        } else {
+          setError(response.error) // Set the specific error message
+        }
       } catch (err) {
         console.error("Failed to fetch templates:", err)
-        setError("Failed to load templates. Please try again later.")
+        setError("An unexpected error occurred while fetching templates.")
       } finally {
         setIsLoadingTemplates(false)
       }
     }
     fetchTemplates()
   }, [])
-
-  // Effect to update URL based on state changes
-  useEffect(() => {
-    const params = new URLSearchParams()
-    if (searchTerm) params.set("search", searchTerm)
-    if (sortBy !== "featured") params.set("sort", sortBy)
-
-    if (selectedPill === "Free") {
-      params.set("filter", "free")
-    } else if (selectedPill !== "All") {
-      params.set("category", selectedPill)
-    }
-    router.replace(`/templates?${params.toString()}`, { scroll: false })
-  }, [searchTerm, selectedPill, sortBy, router])
 
   // Helper function to get categories from client-side data
   const getCategoriesFromClientData = useCallback((templatesData: Template[]): string[] => {
