@@ -1,49 +1,70 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import SkeletonCard from "@/components/skeleton-card" // Import SkeletonCard
+import SkeletonCard from "@/components/skeleton-card"
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useCallback } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { getAllTemplatesAction } from "@/app/actions/template-actions" // Import the new action
+import { getAllTemplatesAction } from "@/app/actions/template-actions"
 import TemplateCard from "@/components/template-card"
 import CategoryPills from "@/components/category-pills"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, ListFilter, LayoutGrid, LayoutList, Sparkles } from "lucide-react"
+import { Search, ListFilter, LayoutGrid, LayoutList, Sparkles, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { Template } from "@/types" // Import Template type
+import type { Template } from "@/types"
 
 export default function TemplatesPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const initialCategoryQuery = searchParams.get("category")
-  const initialFilterQuery = searchParams.get("filter")
 
-  let initialSelected = "All"
-  if (initialFilterQuery === "free") {
-    initialSelected = "Free"
-  } else if (initialCategoryQuery) {
-    initialSelected = initialCategoryQuery
-  }
-
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "")
-  const [selectedPill, setSelectedPill] = useState(initialSelected)
-  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "featured")
+  // Initialize states with defaults, then update from searchParams in useEffect
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedPill, setSelectedPill] = useState("All")
+  const [sortBy, setSortBy] = useState("featured")
   const [layout, setLayout] = useState<"grid" | "list">("grid")
-  const [allTemplates, setAllTemplates] = useState<Template[]>([]) // State to hold all templates
-  const [isLoadingTemplates, setIsLoadingTemplates] = useState(true) // Loading state for templates
+  const [allTemplates, setAllTemplates] = useState<Template[]>([])
+  const [isLoadingTemplates, setIsLoadingTemplates] = useState(true)
+  const [error, setError] = useState<string | null>(null) // New error state
 
+  // Effect to read search params and update state after hydration
+  useEffect(() => {
+    const initialCategoryQuery = searchParams.get("category")
+    const initialFilterQuery = searchParams.get("filter")
+    const initialSearchTerm = searchParams.get("search")
+    const initialSortBy = searchParams.get("sort")
+
+    if (initialSearchTerm) setSearchTerm(initialSearchTerm)
+    if (initialSortBy) setSortBy(initialSortBy)
+
+    if (initialFilterQuery === "free") {
+      setSelectedPill("Free")
+    } else if (initialCategoryQuery) {
+      setSelectedPill(initialCategoryQuery)
+    } else {
+      setSelectedPill("All") // Default if no category or filter
+    }
+  }, [searchParams]) // Only re-run if searchParams object changes
+
+  // Effect to fetch templates
   useEffect(() => {
     const fetchTemplates = async () => {
       setIsLoadingTemplates(true)
-      const templatesData = await getAllTemplatesAction()
-      setAllTemplates(templatesData)
-      setIsLoadingTemplates(false)
+      setError(null) // Clear previous errors
+      try {
+        const templatesData = await getAllTemplatesAction()
+        setAllTemplates(templatesData)
+      } catch (err) {
+        console.error("Failed to fetch templates:", err)
+        setError("Failed to load templates. Please try again later.")
+      } finally {
+        setIsLoadingTemplates(false)
+      }
     }
     fetchTemplates()
-  }, []) // Fetch all templates once on component mount
+  }, [])
 
+  // Effect to update URL based on state changes
   useEffect(() => {
     const params = new URLSearchParams()
     if (searchTerm) params.set("search", searchTerm)
@@ -57,20 +78,15 @@ export default function TemplatesPage() {
     router.replace(`/templates?${params.toString()}`, { scroll: false })
   }, [searchTerm, selectedPill, sortBy, router])
 
-  const categoriesAndFilters = useMemo(() => {
-    // This needs to be async or pre-fetched if getCategories is async
-    // For now, we'll assume getCategories can be called directly or memoized with a dependency on allTemplates
-    // If getCategories is truly async, it should be called in useEffect and stored in state.
-    // For this example, I'll make a synchronous version for client-side use or assume it's pre-fetched.
-    // Given the previous `getCategories` was synchronous, I'll keep it that way for now.
-    return getCategoriesFromClientData(allTemplates) // Use a client-side helper
-  }, [allTemplates])
-
   // Helper function to get categories from client-side data
-  const getCategoriesFromClientData = (templatesData: Template[]): string[] => {
-    const categories = templatesData.map((template) => template.category)
+  const getCategoriesFromClientData = useCallback((templatesData: Template[]): string[] => {
+    const categories = templatesData.map((template) => template.category).filter(Boolean) // Ensure no null/undefined categories
     return ["All", "Free", ...new Set(categories.filter((cat) => cat !== "Free"))]
-  }
+  }, [])
+
+  const categoriesAndFilters = useMemo(() => {
+    return getCategoriesFromClientData(allTemplates)
+  }, [allTemplates, getCategoriesFromClientData])
 
   const filteredAndSortedTemplates = useMemo(() => {
     let filtered = allTemplates
@@ -178,7 +194,13 @@ export default function TemplatesPage() {
         </div>
       </div>
 
-      {isLoadingTemplates ? (
+      {error ? (
+        <div className="text-center py-16 text-destructive">
+          <Info className="h-16 w-16 mx-auto mb-4" />
+          <h3 className="text-2xl font-semibold mb-2">Error Loading Templates</h3>
+          <p className="text-muted-foreground">{error}</p>
+        </div>
+      ) : isLoadingTemplates ? (
         <div
           className={cn(
             "grid gap-6 md:gap-8",
@@ -199,9 +221,10 @@ export default function TemplatesPage() {
             layout === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1",
           )}
         >
-          {filteredAndSortedTemplates.map((template, index) => (
-            <TemplateCard key={template.id} template={template} staggerDelay={index * 50} />
-          ))}
+          {filteredAndSortedTemplates.map((template, index) =>
+            // Add a defensive check for template.id
+            template.id ? <TemplateCard key={template.id} template={template} staggerDelay={index * 50} /> : null,
+          )}
         </div>
       ) : (
         <div className="text-center py-16">
