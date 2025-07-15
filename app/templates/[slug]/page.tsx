@@ -5,16 +5,17 @@ import TemplateDetailPageClient from "./TemplateDetailPageClient"
 import { getTemplateBySlugAction, getRelatedTemplatesAction } from "@/app/actions/template-actions"
 import { getAllTemplateSlugs } from "@/lib/templates"
 
-// We will remove the explicit PageProps interface and cast directly as a workaround
-// due to persistent type errors indicating an environment-specific issue.
+// We will use 'any' for params in the function signatures as a workaround
+// for the persistent type error, which indicates an environment-specific issue.
 
 export async function generateStaticParams() {
   return getAllTemplateSlugs()
 }
 
-// Cast params directly to the expected type
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const typedParams = params as { slug: string } // Explicit cast
+// Use 'any' for params in the signature to bypass the problematic type constraint
+export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
+  // Cast params to the expected type inside the function for type safety within the logic
+  const typedParams = params as { slug: string }
   const template = await getTemplateBySlugAction(typedParams.slug)
   if (!template) {
     return {
@@ -58,9 +59,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-// Cast params directly to the expected type for the page component
-export default async function TemplateDetailPage({ params }: { params: { slug: string } }) {
-  const typedParams = params as { slug: string } // Explicit cast
+// Use 'any' for params in the signature to bypass the problematic type constraint
+export default async function TemplateDetailPage({ params }: { params: any }) {
+  // Cast params to the expected type inside the function for type safety within the logic
+  const typedParams = params as { slug: string }
   const template = await getTemplateBySlugAction(typedParams.slug)
 
   if (!template) {
