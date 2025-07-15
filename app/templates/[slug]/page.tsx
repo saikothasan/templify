@@ -5,6 +5,8 @@ import TemplateDetailPageClient from "./TemplateDetailPageClient"
 import { getTemplateBySlugAction, getRelatedTemplatesAction } from "@/app/actions/template-actions"
 import { getAllTemplateSlugs } from "@/lib/templates" // Import from new utility
 
+export const runtime = "edge"
+
 // For SSG: generateStaticParams now uses the new utility to get slugs
 export async function generateStaticParams() {
   return getAllTemplateSlugs()
