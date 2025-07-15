@@ -5,22 +5,17 @@ import TemplateDetailPageClient from "./TemplateDetailPageClient"
 import { getTemplateBySlugAction, getRelatedTemplatesAction } from "@/app/actions/template-actions"
 import { getAllTemplateSlugs } from "@/lib/templates"
 
-// Explicitly define the PageProps interface as Next.js expects it for dynamic routes
-// This is the standard way Next.js App Router passes props to page components and generateMetadata
-interface PageProps {
-  params: {
-    slug: string
-  }
-  // searchParams is optional, but often part of PageProps in Next.js App Router
-  searchParams?: { [key: string]: string | string[] | undefined }
-}
+// We will remove the explicit PageProps interface and cast directly as a workaround
+// due to persistent type errors indicating an environment-specific issue.
 
 export async function generateStaticParams() {
   return getAllTemplateSlugs()
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const template = await getTemplateBySlugAction(params.slug)
+// Cast params directly to the expected type
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const typedParams = params as { slug: string } // Explicit cast
+  const template = await getTemplateBySlugAction(typedParams.slug)
   if (!template) {
     return {
       title: `Template Not Found | ${VENDOR_NAME}`,
@@ -63,8 +58,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function TemplateDetailPage({ params }: PageProps) {
-  const template = await getTemplateBySlugAction(params.slug)
+// Cast params directly to the expected type for the page component
+export default async function TemplateDetailPage({ params }: { params: { slug: string } }) {
+  const typedParams = params as { slug: string } // Explicit cast
+  const template = await getTemplateBySlugAction(typedParams.slug)
 
   if (!template) {
     notFound()
