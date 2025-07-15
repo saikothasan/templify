@@ -5,18 +5,21 @@ import TemplateDetailPageClient from "./TemplateDetailPageClient"
 import { getTemplateBySlugAction, getRelatedTemplatesAction } from "@/app/actions/template-actions"
 import { getAllTemplateSlugs } from "@/lib/templates"
 
-// Define the expected props type for the page component and generateMetadata
-interface TemplatePageProps {
+// Explicitly define the PageProps interface as Next.js expects it for dynamic routes
+// This is the standard way Next.js App Router passes props to page components and generateMetadata
+interface PageProps {
   params: {
     slug: string
   }
+  // searchParams is optional, but often part of PageProps in Next.js App Router
+  searchParams?: { [key: string]: string | string[] | undefined }
 }
 
 export async function generateStaticParams() {
   return getAllTemplateSlugs()
 }
 
-export async function generateMetadata({ params }: TemplatePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const template = await getTemplateBySlugAction(params.slug)
   if (!template) {
     return {
@@ -60,7 +63,7 @@ export async function generateMetadata({ params }: TemplatePageProps): Promise<M
   }
 }
 
-export default async function TemplateDetailPage({ params }: TemplatePageProps) {
+export default async function TemplateDetailPage({ params }: PageProps) {
   const template = await getTemplateBySlugAction(params.slug)
 
   if (!template) {
