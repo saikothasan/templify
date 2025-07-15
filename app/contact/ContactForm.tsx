@@ -8,6 +8,12 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 
+// Define an interface for the expected API response
+interface ContactApiResponse {
+  message?: string
+  error?: string
+}
+
 export default function ContactForm() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -29,12 +35,13 @@ export default function ContactForm() {
         body: JSON.stringify({ name, email, subject, message }),
       })
 
-      const data = await response.json()
+      // Cast the response data to the defined interface
+      const data: ContactApiResponse = await response.json()
 
       if (response.ok) {
         toast({
           title: "Message Sent!",
-          description: "Thanks for reaching out. We'll get back to you soon.",
+          description: data.message || "Thanks for reaching out. We'll get back to you soon.",
         })
         setName("")
         setEmail("")
