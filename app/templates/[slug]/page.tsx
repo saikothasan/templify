@@ -3,14 +3,20 @@ import { notFound } from "next/navigation"
 import { VENDOR_NAME } from "@/types"
 import TemplateDetailPageClient from "./TemplateDetailPageClient"
 import { getTemplateBySlugAction, getRelatedTemplatesAction } from "@/app/actions/template-actions"
-import { getAllTemplateSlugs } from "@/lib/templates" // Import from new utility
+import { getAllTemplateSlugs } from "@/lib/templates"
 
-// For SSG: generateStaticParams now uses the new utility to get slugs
+// Define the expected props type for the page component and generateMetadata
+interface TemplatePageProps {
+  params: {
+    slug: string
+  }
+}
+
 export async function generateStaticParams() {
   return getAllTemplateSlugs()
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: TemplatePageProps): Promise<Metadata> {
   const template = await getTemplateBySlugAction(params.slug)
   if (!template) {
     return {
@@ -54,7 +60,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function TemplateDetailPage({ params }: { params: { slug: string } }) {
+export default async function TemplateDetailPage({ params }: TemplatePageProps) {
   const template = await getTemplateBySlugAction(params.slug)
 
   if (!template) {
