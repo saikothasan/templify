@@ -1,67 +1,127 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https://developers.cloudflare.com/pages/get-started/c3).
+# Templify - Modern Web Template Marketplace
 
-## Getting Started
+![Templify Logo](public/nullbite-logo.png)
 
-First, run the development server:
+Templify is a modern, responsive web template marketplace built with Next.js, Tailwind CSS, and shadcn/ui. It allows users to browse, search, filter, and view details of various web templates, including landing pages, dashboards, e-commerce themes, and portfolios. The project emphasizes clean design, excellent user experience, and developer-friendly code.
+
+## ✨ Features
+
+*   **Dynamic Template Listing**: Browse a collection of web templates with detailed information.
+*   **Category Filtering**: Filter templates by categories like "Landing Page", "Dashboard", "E-commerce", "Portfolio", and "Blog".
+*   **Search Functionality**: Easily find templates using keywords in names, descriptions, or tags.
+*   **Sorting Options**: Sort templates by featured, newest, price (low to high/high to low), and rating.
+*   **Template Detail Pages**: Dedicated pages for each template with image galleries, features, tech stack, and download/preview links.
+*   **Markdown Content**: Template descriptions and details are rendered from Markdown files, allowing for rich text and easy content management.
+*   **Responsive Design**: Optimized for seamless viewing across all devices (desktop, tablet, mobile).
+*   **Contact Form**: A functional contact form powered by EmailJS for user inquiries.
+*   **Informational Pages**: Includes "About Us", "FAQ", "License", "Privacy Policy", and "Disclaimer" pages.
+*   **Social Sharing**: Share template links easily on social media platforms.
+*   **Google Analytics Integration**: Track website performance and user behavior.
+*   **Dark Mode Support**: Toggle between light and dark themes.
+
+## 🚀 Technologies Used
+
+*   **Next.js**: React framework for building performant web applications (App Router).
+*   **React**: JavaScript library for building user interfaces.
+*   **Tailwind CSS**: A utility-first CSS framework for rapid UI development (v4).
+*   **shadcn/ui**: Reusable UI components built with Radix UI and Tailwind CSS.
+*   **Lucide React**: Beautiful and customizable open-source icons.
+*   **`gray-matter`**: For parsing frontmatter from Markdown files.
+*   **`remark` & `remark-html`**: For converting Markdown content to HTML.
+*   **`@tailwindcss/typography`**: A Tailwind CSS plugin for beautiful, readable typography.
+*   **EmailJS**: For handling contact form submissions without a backend.
+*   **`@emailjs/browser`**: EmailJS SDK for browser environments.
+
+## 🛠️ Getting Started
+
+Follow these steps to set up and run the project locally.
+
+### Prerequisites
+
+Make sure you have Node.js (v18.18.0 or higher) and npm/yarn installed.
+
+### Installation
+
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/saikothasan/templify.git
+    cd templify
+    ```
+
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+3.  **Set up Environment Variables**:
+    Create a `.env.local` file in the root of your project and add the following environment variables. These are crucial for the contact form and Google Analytics.
+
+    ```env
+    # EmailJS Credentials (Required for Contact Form)
+    NEXT_PUBLIC_EMAILJS_SERVICE_ID=YOUR_EMAILJS_SERVICE_ID
+    NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=YOUR_EMAILJS_TEMPLATE_ID
+    NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=YOUR_EMAILJS_PUBLIC_KEY
+
+    # Google Analytics (Optional)
+    NEXT_PUBLIC_GA_MEASUREMENT_ID=YOUR_GA_MEASUREMENT_ID
+
+    # Public URL for Metadata (Replace with your deployment URL)
+    NEXT_PUBLIC_APP_URL=https://your-actual-domain.com
+    ```
+
+    You can obtain your EmailJS credentials from [EmailJS](https://www.emailjs.com/).
+    For Google Analytics, get your Measurement ID from your Google Analytics 4 property.
+
+### Running the Development Server
+
+To run the project in development mode:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
-## Cloudflare integration
+## 📂 Project Structure
 
-Besides the `dev` script mentioned above `c3` has added a few extra scripts that allow you to integrate the application with the [Cloudflare Pages](https://pages.cloudflare.com/) environment, these are:
-  - `pages:build` to build the application for Pages using the [`@cloudflare/next-on-pages`](https://github.com/cloudflare/next-on-pages) CLI
-  - `preview` to locally preview your Pages application using the [Wrangler](https://developers.cloudflare.com/workers/wrangler/) CLI
-  - `deploy` to deploy your Pages application using the [Wrangler](https://developers.cloudflare.com/workers/wrangler/) CLI
+```
+.
+├── app/                      # Next.js App Router pages, layouts, and API routes
+│   ├── actions/              # Server Actions for data fetching
+│   ├── contact/              # Contact page and form component
+│   ├── templates/            # Template listing and detail pages
+│   └── globals.css           # Global Tailwind CSS styles
+├── components/               # Reusable React components (UI, layout, specific features)
+│   ├── layout/               # Navbar and Footer
+│   ├── ui/                   # shadcn/ui components
+│   └── ...
+├── content/                  # Markdown content for templates
+│   └── templates/            # Individual template markdown files
+├── hooks/                    # Custom React hooks
+├── lib/                      # Utility functions (e.g., template parsing)
+├── public/                   # Static assets (images, favicon)
+├── types/                    # TypeScript type definitions
+├── .env.d.ts                 # Environment variable type declarations
+├── next.config.mjs           # Next.js configuration
+├── package.json              # Project dependencies and scripts
+├── tailwind.config.ts        # Tailwind CSS configuration
+├── tsconfig.json             # TypeScript configuration
+└── README.md                 # This file
+```
 
-> __Note:__ while the `dev` script is optimal for local development you should preview your Pages application as well (periodically or before deployments) in order to make sure that it can properly work in the Pages environment (for more details see the [`@cloudflare/next-on-pages` recommended workflow](https://github.com/cloudflare/next-on-pages/blob/main/internal-packages/next-dev/README.md#recommended-development-workflow))
+## 🤝 Contributing
 
-### Bindings
+Contributions are welcome! If you have suggestions for improvements, bug fixes, or new features, please open an issue or submit a pull request.
 
-Cloudflare [Bindings](https://developers.cloudflare.com/pages/functions/bindings/) are what allows you to interact with resources available in the Cloudflare Platform.
+## 📄 License
 
-You can use bindings during development, when previewing locally your application and of course in the deployed application:
+This project is open-source and available under the [MIT License](LICENSE).
+Individual templates may have their own specific licenses; please refer to their respective detail pages.
 
-- To use bindings in dev mode you need to define them in the `next.config.js` file under `setupDevBindings`, this mode uses the `next-dev` `@cloudflare/next-on-pages` submodule. For more details see its [documentation](https://github.com/cloudflare/next-on-pages/blob/05b6256/internal-packages/next-dev/README.md).
+## 🚀 Deployment
 
-- To use bindings in the preview mode you need to add them to the `pages:preview` script accordingly to the `wrangler pages dev` command. For more details see its [documentation](https://developers.cloudflare.com/workers/wrangler/commands/#dev-1) or the [Pages Bindings documentation](https://developers.cloudflare.com/pages/functions/bindings/).
-
-- To use bindings in the deployed application you will need to configure them in the Cloudflare [dashboard](https://dash.cloudflare.com/). For more details see the  [Pages Bindings documentation](https://developers.cloudflare.com/pages/functions/bindings/).
-
-#### KV Example
-
-`c3` has added for you an example showing how you can use a KV binding.
-
-In order to enable the example:
-- Search for javascript/typescript lines containing the following comment:
-  ```ts
-  // KV Example:
-  ```
-  and uncomment the commented lines below it (also uncomment the relevant imports).
-- In the `wrangler.jsonc` file add the following configuration line:
-  ```
-  "kv_namespaces": [{ "binding": "MY_KV_NAMESPACE", "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" }],
-  ```
-- If you're using TypeScript run the `cf-typegen` script to update the `env.d.ts` file:
-  ```bash
-  npm run cf-typegen
-  # or
-  yarn cf-typegen
-  # or
-  pnpm cf-typegen
-  # or
-  bun cf-typegen
-  ```
-
-After doing this you can run the `dev` or `preview` script and visit the `/api/hello` route to see the example in action.
-
-Finally, if you also want to see the example work in the deployed application make sure to add a `MY_KV_NAMESPACE` binding to your Pages application in its [dashboard kv bindings settings section](https://dash.cloudflare.com/?to=/:account/pages/view/:pages-project/settings/functions#kv_namespace_bindings_section). After having configured it make sure to re-deploy your application.
+This project is designed to be easily deployed on [Vercel](https://vercel.com), the creators of Next.js.
