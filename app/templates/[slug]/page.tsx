@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
     }
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://your-actual-domain.com"
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://templify.pages.dev"
   const fullImageUrl = template.imageUrl.startsWith("http") ? template.imageUrl : `${siteUrl}${template.imageUrl}`
 
   return {
