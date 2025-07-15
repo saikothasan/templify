@@ -26,18 +26,18 @@ export const metadata: Metadata = {
     "free templates",
     VENDOR_NAME,
   ],
-  authors: [{ name: VENDOR_NAME, url: "https://your-actual-domain.com" }], // Replace with actual domain
+  authors: [{ name: VENDOR_NAME, url: "https://templify.pages.dev" }], // Replace with actual domain
   creator: VENDOR_NAME,
   publisher: VENDOR_NAME,
   // Add Open Graph and Twitter metadata defaults
   openGraph: {
     title: `${VENDOR_NAME} - Premium & Free Web Templates`,
     description: `Discover high-quality, professional, and free web templates from ${VENDOR_NAME}.`,
-    url: "https://your-actual-domain.com", // Replace with actual domain
+    url: "https://templify.pages.dev", // Replace with actual domain
     siteName: VENDOR_NAME,
     images: [
       {
-        url: "https://your-actual-domain.com/og-image.png", // Replace with your actual OG image URL
+        url: "https://templify.pages.dev/og-image.png", // Replace with your actual OG image URL
         width: 1200,
         height: 630,
         alt: `${VENDOR_NAME} Templates`,
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     description: `Discover high-quality, professional, and free web templates from ${VENDOR_NAME}.`,
     // site: "@yourtwitterhandle", // Replace with your Twitter handle
     // creator: "@yourtwitterhandle", // Replace with your Twitter handle
-    images: ["https://your-actual-domain.com/twitter-image.png"], // Replace with your actual Twitter image URL
+    images: ["https://templify.pages.dev/twitter-image.png"], // Replace with your actual Twitter image URL
   },
   icons: {
     // Add favicon links
