@@ -1,11 +1,19 @@
 import { NextResponse } from "next/server"
 
+// Define an interface for the expected request body
+interface ContactFormInput {
+  name: string
+  email: string
+  subject: string
+  message: string
+}
+
 // Set the runtime to edge for optimal performance
 export const runtime = "edge"
 
 export async function POST(request: Request) {
   try {
-    const { name, email, subject, message } = await request.json()
+    const { name, email, subject, message } = (await request.json()) as ContactFormInput
 
     // Validate incoming data
     if (!name || !email || !subject || !message) {
