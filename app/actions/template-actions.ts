@@ -1,8 +1,6 @@
 "use server"
 
 import type { Template } from "@/types"
-// No longer directly importing getTemplateBySlug from lib/templates here,
-// as the API route will handle that.
 
 // Define a type for the structured response from server actions
 type TemplatesActionResponse =
@@ -66,10 +64,11 @@ export async function getRelatedTemplatesAction(
 }
 
 // New action to get all templates for listing pages
+// Made parameters optional to allow calling without filters
 export async function getAllTemplatesAction(
-  searchTerm: string,
-  selectedCategory: string,
-  sortBy: string,
+  searchTerm?: string, // Made optional
+  selectedCategory?: string, // Made optional
+  sortBy?: string, // Made optional
 ): Promise<TemplatesActionResponse> {
   // Simulate a delay
   await new Promise((resolve) => setTimeout(resolve, 50))
@@ -78,7 +77,8 @@ export async function getAllTemplatesAction(
     if (searchTerm) params.set("search", searchTerm)
     if (selectedCategory === "Free") {
       params.set("filter", "free")
-    } else if (selectedCategory !== "All") {
+    } else if (selectedCategory && selectedCategory !== "All") {
+      // Check if selectedCategory exists before setting
       params.set("category", selectedCategory)
     }
     if (sortBy) params.set("sort", sortBy)
