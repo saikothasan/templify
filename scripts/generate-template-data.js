@@ -2,7 +2,17 @@ const fs = require("fs")
 const path = require("path")
 const matter = require("gray-matter")
 const { remark } = require("remark")
-const html = require("remark-html")
+// More robust import for remark-html to handle different module export patterns
+const remarkHtmlModule = require("remark-html")
+const html = remarkHtmlModule.html || remarkHtmlModule.default || remarkHtmlModule
+
+// Basic validation to ensure 'html' is a function before proceeding
+if (typeof html !== "function") {
+  console.error(
+    "Error: remark-html plugin 'html' is not a function after import. Please check remark-html version and exports.",
+  )
+  process.exit(1)
+}
 
 const templatesDirectory = path.join(process.cwd(), "content/templates")
 const outputFilePath = path.join(process.cwd(), "lib/template-data.ts")
