@@ -24,11 +24,17 @@ export default function RelatedTemplates({ currentTemplateId, currentCategory, i
       setIsLoading(true)
       const fetchRelated = async () => {
         // Use the server action to fetch all templates, then filter client-side
-        const allTemplates = await getAllTemplatesAction()
-        const filteredRelated = allTemplates
-          .filter((template) => template.category === currentCategory && template.id !== currentTemplateId)
-          .slice(0, 3)
-        setRelated(filteredRelated)
+        const allTemplatesResponse = await getAllTemplatesAction() // Renamed variable for clarity
+        if (allTemplatesResponse.success && allTemplatesResponse.data) {
+          const filteredRelated = allTemplatesResponse.data
+            .filter((template) => template.category === currentCategory && template.id !== currentTemplateId)
+            .slice(0, 3)
+          setRelated(filteredRelated)
+        } else {
+          // Handle error if fetching all templates fails
+          console.error("Failed to fetch all templates for related section:", allTemplatesResponse.error)
+          setRelated([]) // Ensure related is empty on error
+        }
         setIsLoading(false)
       }
       fetchRelated()
