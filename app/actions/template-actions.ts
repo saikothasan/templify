@@ -1,7 +1,8 @@
 "use server"
 
 import type { Template } from "@/types"
-import { getTemplateBySlug } from "@/lib/templates" // Import from new utility
+// No longer directly importing getTemplateBySlug from lib/templates here,
+// as the API route will handle that.
 
 // Define a type for the structured response from server actions
 type TemplatesActionResponse =
@@ -17,10 +18,20 @@ export async function getTemplateBySlugAction(slug: string): Promise<TemplateAct
   await new Promise((resolve) => setTimeout(resolve, 50)) // 50ms delay
 
   try {
-    const template = await getTemplateBySlug(slug) // Use the new utility
-    return { success: true, data: template || null, error: null }
+    // Call the API route to get a single template by slug
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/templates?slug=${encodeURIComponent(slug)}`)
+    const data: TemplatesActionResponse = await response.json()
+
+    if (data.success && data.data && data.data.length > 0) {
+      // The API returns an array, so we take the first item
+      return { success: true, data: data.data[0], error: null }
+    } else if (data.success && data.data && data.data.length === 0) {
+      return { success: true, data: null, error: null } // Template not found
+    } else {
+      return { success: false, data: null, error: data.error || `Failed to load template for slug: ${slug}` }
+    }
   } catch (err: any) {
-    console.error(`Error fetching template by slug (${slug}):`, err)
+    console.error(`Error fetching template by slug (${slug}) via API:`, err)
     return { success: false, data: null, error: `Failed to load template: ${err.message || "Unknown error"}` }
   }
 }
