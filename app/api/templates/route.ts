@@ -3,6 +3,7 @@ import { getAllTemplates } from "@/lib/templates"
 
 // Removed: export const runtime = "edge"
 // This file will now run on the default Node.js runtime, allowing 'fs' access.
+export const runtime = 'edge'
 
 export async function GET(request: Request) {
   try {
